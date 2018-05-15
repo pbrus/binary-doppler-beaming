@@ -1,6 +1,5 @@
-from math import sqrt, pi, pow, radians, sin, cos
+from math import sqrt, pi, pow, radians, sin, cos, atan2
 from scipy.optimize import fsolve
-from numpy import arcsin
 from astro_units import *
 
 
@@ -39,11 +38,12 @@ class Orbit2D(UnitsConverter):
         return self.eccentric_anomaly
 
     def calculate_true_anomaly(self):
-        sin_true_anomaly = sqrt(1
-            - pow(self.eccentricity, 2))*sin(self.eccentric_anomaly)/(1
-            - self.eccentricity*cos(self.eccentric_anomaly))
+        x = sqrt(1 - self.eccentricity)*cos(0.5*self.eccentric_anomaly)
+        y = sqrt(1 + self.eccentricity)*sin(0.5*self.eccentric_anomaly)
+        self.true_anomaly = 2*atan2(y, x)
 
-        self.true_anomaly = arcsin(sin_true_anomaly)
+        if self.true_anomaly < 0:
+            self.true_anomaly += 2*pi
 
         return self.true_anomaly
 
