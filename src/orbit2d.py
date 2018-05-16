@@ -1,4 +1,4 @@
-from math import sqrt, pi, pow, radians, sin, cos, atan2
+from math import sqrt, pi, pow, radians, sin, cos, atan2, asin
 from scipy.optimize import fsolve
 from astro_units import *
 
@@ -83,3 +83,30 @@ class Orbit2D(UnitsConverter):
         self.position = x_coorindate, y_coorindate
 
         return self.position
+
+    def calculate_velocity(self):
+        """Calculate velocity tuple in meters per second."""
+        speed = self.calculate_speed()
+        angle = self.calculate_velocity_angle(speed)
+
+        return speed*cos(angle), speed*sin(angle)
+
+    def calculate_speed(self):
+        sum_mass = self.first_mass + self.second_mass
+        speed_pow2 = 2/self.distance - 1/self.semi_major_axis
+        speed_pow2 *= G_unit*self.convert_sun_mass_to_kg(sum_mass)
+
+        return sqrt(speed_pow2)
+
+    def calculate_velocity_angle(self, speed):
+        sin_angle = (pow(self.semi_major_axis, 2)
+                     - pow(self.eccentricity*self.semi_major_axis,2))
+        sin_angle /= (self.distance*(2*self.semi_major_axis - self.distance))
+        sin_angle = sqrt(sin_angle)
+
+        if divmod(self.true_anomaly, 2*pi)[1] <= pi:
+            angle = asin(sin_angle) + self.true_anomaly
+        else:
+            angle = pi - asin(sin_angle) + self.true_anomaly
+
+        return angle
