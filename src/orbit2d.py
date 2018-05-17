@@ -35,7 +35,7 @@ class Orbit2D(UnitsConverter):
         sum_mass = self.first_mass + self.second_mass
         self.period = sqrt(
             4*pow(pi,2)*pow(self.semi_major_axis, 3)
-            /(G_unit*(self.convert_sun_mass_to_kg(sum_mass))))
+            /(self.G*(self.convert_sun_mass_to_kg(sum_mass))))
 
         return self.period
 
@@ -88,13 +88,14 @@ class Orbit2D(UnitsConverter):
         """Calculate velocity tuple in meters per second."""
         speed = self.calculate_speed()
         angle = self.calculate_velocity_angle(speed)
+        self.velocity = speed*cos(angle), speed*sin(angle)
 
-        return speed*cos(angle), speed*sin(angle)
+        return self.velocity
 
     def calculate_speed(self):
         sum_mass = self.first_mass + self.second_mass
         speed_pow2 = 2/self.distance - 1/self.semi_major_axis
-        speed_pow2 *= G_unit*self.convert_sun_mass_to_kg(sum_mass)
+        speed_pow2 *= self.G*self.convert_sun_mass_to_kg(sum_mass)
 
         return sqrt(speed_pow2)
 
@@ -105,8 +106,17 @@ class Orbit2D(UnitsConverter):
         sin_angle = sqrt(sin_angle)
 
         if divmod(self.true_anomaly, 2*pi)[1] <= pi:
-            angle = asin(sin_angle) + self.true_anomaly
+            velocity_angle = asin(sin_angle) + self.true_anomaly
         else:
-            angle = pi - asin(sin_angle) + self.true_anomaly
+            velocity_angle = pi - asin(sin_angle) + self.true_anomaly
 
-        return angle
+        return velocity_angle
+
+    def update(self, time):
+        """Update x, y, v_x, v_y for particular time"""
+        self.calculate_mean_anomaly(time)
+        self.calculate_eccentric_anomaly()
+        self.calculate_true_anomaly()
+        self.calculate_distance()
+        self.calculate_position()
+        self.calculate_velocity()
