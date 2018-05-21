@@ -40,6 +40,7 @@ class Orbit2D(UnitsConverter):
         self.semi_major_axis = orbit2d.semi_major_axis
         self.eccentricity = orbit2d.eccentricity
         self.periastron_passage = orbit2d.periastron_passage
+        self.calculate_period()
 
     def calculate_period(self):
         """Calculate a period in seconds."""
