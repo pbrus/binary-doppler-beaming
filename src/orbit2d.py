@@ -99,7 +99,7 @@ class Orbit2D(UnitsConverter):
     def calculate_velocity(self):
         """Calculate velocity tuple in meters per second."""
         speed = self.calculate_speed()
-        angle = self.calculate_velocity_angle(speed)
+        angle = self.calculate_velocity_angle()
         self.velocity = speed*cos(angle), speed*sin(angle)
 
         return self.velocity
@@ -111,7 +111,7 @@ class Orbit2D(UnitsConverter):
 
         return sqrt(speed_pow2)
 
-    def calculate_velocity_angle(self, speed):
+    def calculate_velocity_angle(self):
         sin_angle = (pow(self.semi_major_axis, 2)
                      - pow(self.eccentricity*self.semi_major_axis,2))
         sin_angle /= (self.distance*(2*self.semi_major_axis - self.distance))

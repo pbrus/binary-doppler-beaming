@@ -41,19 +41,33 @@ class Orbit3D(Orbit2D):
         self.periastron_argument = orientation.periastron_argument
         self.longitude_periapsis = orientation.longitude_periapsis
 
-    def update(self, time):
-        Orbit2D.update(self, time)
-        x, y = self.position
-        self.inclination = 0
-        x_rot, y_rot = self.rotate_coordinate_system(x, y,
-            self.periastron_argument)
-        x_sky, y_sky = self.rotate_coordinate_system(x_rot,
-            y_rot*cos(self.inclination), self.longitude_node)
-
-        return x_sky, y_sky
-
     def rotate_coordinate_system(self, x, y, angle):
         x_rotate = x*cos(-angle) + y*sin(-angle)
         y_rotate = -x*sin(-angle) + y*cos(-angle)
 
         return x_rotate, y_rotate
+
+    def calculate_projected_position(self):
+        x, y = self.position
+        self.inclination = 0
+        x_rot, y_rot = self.rotate_coordinate_system(x, y,
+            self.periastron_argument)
+        self.projected_position = self.rotate_coordinate_system(x_rot,
+            y_rot*cos(self.inclination), self.longitude_node)
+
+        return self.projected_position
+
+    def calculate_velocity(self):
+        """Calculate velocity tuple in meters per second."""
+        speed = self.calculate_speed()
+        angle = (self.calculate_velocity_angle()
+            + self.longitude_node + self.periastron_argument)
+        self.velocity = speed*cos(angle), speed*sin(angle)
+
+        return self.velocity
+
+    def update(self, time):
+        """Update x, y projected on sky for particular time"""
+        Orbit2D.update(self, time)
+        self.calculate_projected_position()
+        self.calculate_velocity()
