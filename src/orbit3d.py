@@ -49,7 +49,6 @@ class Orbit3D(Orbit2D):
 
     def calculate_projected_position(self):
         x, y = self.position
-        self.inclination = 0
         x_rot, y_rot = self.rotate_coordinate_system(x, y,
             self.periastron_argument)
         self.projected_position = self.rotate_coordinate_system(x_rot,
@@ -62,12 +61,12 @@ class Orbit3D(Orbit2D):
         speed = self.calculate_speed()
         angle = (self.calculate_velocity_angle()
             + self.longitude_node + self.periastron_argument)
-        self.velocity = speed*cos(angle), speed*sin(angle)
+        self.velocity = speed*cos(angle)*sin(self.inclination), speed*sin(angle)
 
         return self.velocity
 
     def update(self, time):
-        """Update x, y projected on sky for particular time"""
+        """Update x, y, v_x, v_y projected on the sky for particular time."""
         Orbit2D.update(self, time)
         self.calculate_projected_position()
         self.calculate_velocity()
