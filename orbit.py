@@ -1,6 +1,6 @@
 from math import sqrt, pi, pow, radians, sin, cos, atan2, asin
 from scipy.optimize import fsolve
-from astro_units import *
+from astunit import *
 
 
 class Orbit2DParameters:
@@ -131,4 +131,74 @@ class Orbit2D(UnitsConverter):
         self.calculate_true_anomaly()
         self.calculate_distance()
         self.calculate_position()
+        self.calculate_velocity()
+
+
+class Orbit2DOrientation:
+    """Orbit2DOrientation is a builder class for the Orbit3D objects."""
+
+    def __init__(self, longitude_node, inclination, periastron_argument):
+        """Set orbit's orientation of binary system in 3D space.
+
+        Parameters
+        ----------
+        longitude_node : float
+            The position angle of the ascending node. Expressed in degrees.
+        inclination : float
+            The orbital inclination between 0 and 180. For inclination < 90
+            an object moves in direction of increasing position angle. For
+            inclination > 90 the direction is opposite. Expressed in degrees.
+        periastron_argument : float
+           The angle between the node and the periastron, measured in the
+           direction of the motion of the object. Expressed in degrees.
+        """
+        self.longitude_node = radians(longitude_node)
+        self.inclination = radians(inclination)
+        self.periastron_argument = radians(periastron_argument)
+
+        if self.inclination < 90.0:
+            self.longitude_periapsis = (self.longitude_node
+                                        + self.periastron_argument)
+        else:
+            self.longitude_periapsis = (self.longitude_node
+                                        - self.periastron_argument)
+
+
+class Orbit3D(Orbit2D):
+
+    def __init__(self, orbit2d, orientation):
+        Orbit2D.__init__(self, orbit2d)
+        self.longitude_node = orientation.longitude_node
+        self.inclination = orientation.inclination
+        self.periastron_argument = orientation.periastron_argument
+        self.longitude_periapsis = orientation.longitude_periapsis
+
+    def rotate_coordinate_system(self, x, y, angle):
+        x_rotate = x*cos(-angle) + y*sin(-angle)
+        y_rotate = -x*sin(-angle) + y*cos(-angle)
+
+        return x_rotate, y_rotate
+
+    def calculate_projected_position(self):
+        x, y = self.position
+        x_rot, y_rot = self.rotate_coordinate_system(x, y,
+            self.periastron_argument)
+        self.projected_position = self.rotate_coordinate_system(x_rot,
+            y_rot*cos(self.inclination), self.longitude_node)
+
+        return self.projected_position
+
+    def calculate_velocity(self):
+        """Calculate velocity tuple in meters per second."""
+        speed = self.calculate_speed()
+        angle = (self.calculate_velocity_angle()
+            + self.longitude_node + self.periastron_argument)
+        self.velocity = speed*cos(angle)*sin(self.inclination), speed*sin(angle)
+
+        return self.velocity
+
+    def update(self, time):
+        """Update x, y, v_x, v_y projected on the sky for particular time."""
+        Orbit2D.update(self, time)
+        self.calculate_projected_position()
         self.calculate_velocity()
