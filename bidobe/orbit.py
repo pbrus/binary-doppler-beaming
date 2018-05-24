@@ -1,22 +1,21 @@
 from math import sqrt, pi, pow, radians, sin, cos, atan2, asin
 from scipy.optimize import fsolve
-from astunit import *
+from bidobe.astunit import *
 
 
 class Orbit2DParameters:
     """Orbit2DParameters is a builder class for the Orbit2D objects."""
 
     def __init__(self, first_mass, second_mass,
-                 semi_major_axis, eccentricity, periastron_passage=0.0):
+                 separation, eccentricity, periastron_passage=0.0):
         """Set basic parameters of binary system in 2D space.
 
         Parameters
         ----------
         first_mass, second_mass : float
             Star masses of binary system. Expressed in Sun mass unit.
-        semi_major_axis : float
-            Semi major axis of an orbit of star which must be calculated.
-            Expressed in meters.
+        separation : float
+            Separation between two masses expressed in meters.
         eccentricity : float
             A value of orbit's eccentricity between 0 and 1.
         periastron_passage : float
@@ -24,7 +23,7 @@ class Orbit2DParameters:
         """
         self.first_mass = first_mass
         self.second_mass = second_mass
-        self.semi_major_axis = semi_major_axis
+        self.separation = separation
         self.eccentricity = eccentricity
         self.periastron_passage = periastron_passage
 
@@ -37,16 +36,24 @@ class Orbit2D(UnitsConverter):
     def __init__(self, orbit2d):
         self.first_mass = orbit2d.first_mass
         self.second_mass = orbit2d.second_mass
-        self.semi_major_axis = orbit2d.semi_major_axis
+        self.separation = orbit2d.separation
         self.eccentricity = orbit2d.eccentricity
         self.periastron_passage = orbit2d.periastron_passage
+        self.calculate_semi_major_axis()
         self.calculate_period()
+
+    def calculate_semi_major_axis(self):
+        """Calculate a semi major axis."""
+        sum_mass = self.first_mass + self.second_mass
+        self.semi_major_axis = self.separation*self.second_mass/sum_mass
+
+        return self.semi_major_axis
 
     def calculate_period(self):
         """Calculate a period in seconds."""
         sum_mass = self.first_mass + self.second_mass
         self.period = sqrt(
-            4*pow(pi,2)*pow(self.semi_major_axis, 3)
+            4*pow(pi,2)*pow(self.separation, 3)
             /(self.G*(self.convert_sun_mass_to_kg(sum_mass))))
 
         return self.period
