@@ -125,6 +125,11 @@ class Orbit2D(UnitsConverter):
         sin_angle /= (self.distance*(2*self.semi_major_axis - self.distance))
         sin_angle = sqrt(sin_angle)
 
+        if sin_angle > 1.0:
+            sin_angle = 1.0
+        elif sin_angle < -1.0:
+            sin_angle = -1.0
+
         if divmod(self.true_anomaly, 2*pi)[1] <= pi:
             velocity_angle = asin(sin_angle) + self.true_anomaly
         else:
