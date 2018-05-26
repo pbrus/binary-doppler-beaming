@@ -165,7 +165,7 @@ class Orbit2DOrientation:
            The angle between the node and the periastron, measured in the
            direction of the motion of the object. Expressed in degrees.
         """
-        self.longitude_node = radians(longitude_node)
+        self.longitude_node = radians(longitude_node + 90.0) # XY to WN => +90
         self.inclination = radians(inclination)
         self.periastron_argument = radians(periastron_argument)
 
