@@ -1,13 +1,14 @@
 import matplotlib.pyplot as plt
 
 
-def plot_projected_orbits(orbit1, orbit2):
+def plot_projected_orbits(orbit1, orbit2, filename=None):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_aspect('equal')
     ax.grid(color='gray', linestyle='--', linewidth=0.2)
     plt.xlabel('x (AU)')
     plt.ylabel('y (AU)')
+    plt.title('Binary system')
     orbit = choose_greater_orbit(orbit1, orbit2)
     arrow_length = calculate_arrow_length(orbit)
     xran, yran = choose_xy_ranges(orbit, arrow_length)
@@ -21,7 +22,11 @@ def plot_projected_orbits(orbit1, orbit2):
     ax.annotate("N", (0.05*arrow_length, arrow_length))
     plt.plot(orbit1[:,0], orbit1[:,1], 'r-', linewidth=0.5)
     plt.plot(orbit2[:,0], orbit2[:,1], 'b-', linewidth=0.5)
-    plt.show()
+
+    if filename:
+        fig.savefig(filename)
+    else:
+        plt.show()
 
 def choose_greater_orbit(orbit1, orbit2):
     x1_min = orbit1[:,0].min()

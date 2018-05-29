@@ -10,7 +10,7 @@ mass2 = 0.2
 sum_major_axis = 1.5e11
 eccentricity = 0.397
 longitude_node = 80.9
-inclination = 80 #47.3
+inclination = 47.3
 periastron_argument = 130.9
 
 parameters1 = Orbit2DParameters(mass1, mass2, sum_major_axis, eccentricity)
