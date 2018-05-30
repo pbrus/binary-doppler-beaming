@@ -23,10 +23,16 @@ class UnitsConverter:
         return seconds/self.DAY
 
     def convert_min_to_sec(self, minutes):
-        return MINUTE*minutes
+        return self.MINUTE*minutes
 
     def convert_sec_to_min(self, seconds):
-        return secons/MINUTE
+        return seconds/self.MINUTE
+
+    def convert_hours_to_sec(self, minutes):
+        return (self.MINUTE**2)*minutes
+
+    def convert_sec_to_hours(self, seconds):
+        return seconds/(self.MINUTE**2)
 
     def convert_au_to_m(self, au):
         return au*self.AU
