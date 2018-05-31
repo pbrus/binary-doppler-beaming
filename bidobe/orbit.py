@@ -218,4 +218,4 @@ class Orbit3D(Orbit2D):
         """
         Orbit2D.update(self, time)
         self.calculate_projected_position()
-        self.calculate_velocity()
+        self.calculate_radial_velocity()
