@@ -54,7 +54,7 @@ class Orbit2D(UnitsConverter):
         """Calculate a period in seconds."""
         sum_mass = self.first_mass + self.second_mass
         self.period = sqrt(
-            4*pow(pi,2)*pow(self.sum_semi_major_axes, 3)
+            4*pow(pi,2)*pow(self.sum_semi_major_axes,3)
             /(self.G*(self.convert_sun_mass_to_kg(sum_mass))))
 
         return self.period
@@ -120,7 +120,7 @@ class Orbit2D(UnitsConverter):
         return sqrt(speed_pow2)
 
     def calculate_velocity_angle(self):
-        sin_angle = (pow(self.semi_major_axis, 2)
+        sin_angle = (pow(self.semi_major_axis,2)
                      - pow(self.eccentricity*self.semi_major_axis,2))
         sin_angle /= (self.distance*(2*self.semi_major_axis - self.distance))
         sin_angle = sqrt(sin_angle)
@@ -201,17 +201,21 @@ class Orbit3D(Orbit2D):
 
         return self.projected_position
 
-    def calculate_velocity(self):
-        """Calculate velocity tuple in meters per second."""
-        speed = self.calculate_speed()
-        angle = (self.calculate_velocity_angle()
-            + self.longitude_node + self.periastron_argument)
-        self.velocity = speed*cos(angle)*sin(self.inclination), speed*sin(angle)
+    def calculate_radial_velocity(self):
+        """Calculate radial velocity in meters per second."""
+        K = 2*pi*self.semi_major_axis*sin(self.inclination)
+        K /= self.period*sqrt(1 - pow(self.eccentricity,2))
 
-        return self.velocity
+        self.radial_velocity = K*(
+            cos(self.periastron_argument + self.true_anomaly)
+            + self.eccentricity*cos(self.periastron_argument))
+
+        return self.radial_velocity
 
     def update(self, time):
-        """Update x, y, v_x, v_y projected on the sky for particular time."""
+        """Update x, y projected on the sky and radial velocity
+        for particular time.
+        """
         Orbit2D.update(self, time)
         self.calculate_projected_position()
         self.calculate_velocity()
