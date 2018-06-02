@@ -1,13 +1,13 @@
 import matplotlib.pyplot as plt
 
 
-def plot_projected_orbits(orbit1, orbit2, filename=None):
+def plot_projected_orbits(orbit1, orbit2, xunit="m", yunit="m", filename=None):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_aspect('equal')
     ax.grid(color='gray', linestyle='--', linewidth=0.2)
-    plt.xlabel('x (AU)')
-    plt.ylabel('y (AU)')
+    plt.xlabel('x (' + xunit + ')')
+    plt.ylabel('y (' + yunit + ')')
     plt.title('Binary system')
     orbit = choose_greater_orbit(orbit1, orbit2)
     arrow_length = calculate_arrow_length(orbit)
@@ -22,9 +22,10 @@ def plot_projected_orbits(orbit1, orbit2, filename=None):
     ax.annotate("N", (0.05*arrow_length, arrow_length))
     plt.plot(orbit1[:,0], orbit1[:,1], 'r-', linewidth=0.5)
     plt.plot(orbit2[:,0], orbit2[:,1], 'b-', linewidth=0.5)
+    plt.tight_layout()
 
     if filename:
-        fig.savefig(filename)
+        fig.savefig(filename, format="eps", bbox_inches=None)
     else:
         plt.show()
 
@@ -58,7 +59,7 @@ def choose_xy_ranges(orbit, arrow_length):
     y_max = orbit[:,1].max()
 
     minimum, maximum = choose_greater_range(x_min, x_max, y_min, y_max)
-    margin = 0.05*(maximum - minimum)
+    margin = 0.1*(maximum - minimum)
 
     if arrow_length > x_max:
         x_max = 1.2*arrow_length
@@ -73,3 +74,22 @@ def choose_greater_range(first_min, first_max, second_min, second_max):
         return first_min, first_max
     else:
         return second_min, second_max
+
+
+def plot_radial_velocities(time, velocity1, velocity2,
+                           xunit="s", yunit="m/s",
+                           filename=None):
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.grid(color='gray', linestyle='--', linewidth=0.2)
+    plt.xlabel('Time (' + xunit + ')')
+    plt.ylabel(r'$V_{rad}$' + ' (' + yunit + ')')
+    plt.title('Radial velocities')
+    plt.plot(time, velocity1, 'r-', linewidth=0.5)
+    plt.plot(time, velocity2, 'b-', linewidth=0.5)
+    plt.tight_layout()
+
+    if filename:
+        fig.savefig(filename, format="eps", bbox_inches=None)
+    else:
+        plt.show()
