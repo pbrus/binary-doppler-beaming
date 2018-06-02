@@ -30,7 +30,7 @@ class Orbit2DParameters:
 
 class Orbit2D(UnitsConverter):
     """Orbit2D represents the position and velocity vectors of any object
-    in binary system. For any given time t the: x(t), y(t), v_x(t), v_y(t)
+    in binary system. For any given time t: x(t), y(t), v_x(t), v_y(t)
     are computed."""
 
     def __init__(self, orbit2d):
@@ -178,6 +178,9 @@ class Orbit2DOrientation:
 
 
 class Orbit3D(Orbit2D):
+    """Orbit3D represents the projected position on the sky and a value of
+    the radial velocity of any object in binary system. For any given time t:
+    x(t), y(t), v_rad(t) are computed."""
 
     def __init__(self, orbit2d, orientation):
         Orbit2D.__init__(self, orbit2d)
