@@ -2,6 +2,23 @@ import matplotlib.pyplot as plt
 
 
 def plot_projected_orbits(orbit1, orbit2, xunit="m", yunit="m", filename=None):
+    """
+    Plot orbits of a binary system projected on the sky. Position
+    expressed in XY coordinate system.
+
+    Parameters
+    ----------
+    orbit1, orbit2 : numpy.array(shape=(*,2), dtype=float)
+        Array represents x, y position of an object
+        in the binary system.
+    xunit, yunit : str
+        String which is x/y's label on an image.
+        Default set in meters.
+    filename : str
+        The name of a file where the image will be saved to.
+        It should have the .eps extenstion. If None the image
+        will be only displayed on a screen.
+    """
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_aspect('equal')
@@ -77,8 +94,27 @@ def choose_greater_range(first_min, first_max, second_min, second_max):
 
 
 def plot_radial_velocities(time, velocity1, velocity2,
-                           xunit="s", yunit="m/s",
-                           filename=None):
+                           xunit="s", yunit="m/s", filename=None):
+    """
+    Plot radial velocities of a binary system.
+
+    Parameters
+    ----------
+    time : 1D numpy.array(dtype=float)
+        Array represents time.
+    velocity1, velocity2 : 1D numpy.array(dtype=float)
+        Array represents radial velocity of each object.
+    xunit : str
+        String which is x's label on the image.
+        Default set in seconds.
+    yunit : str
+        String which is y's label on the image.
+        Default set in meters per second.
+    filename : str
+        The name of a file where the image will be saved to.
+        It should have the .eps extenstion. If None the image
+        will be only displayed on a screen.
+    """
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.grid(color='gray', linestyle='--', linewidth=0.2)
