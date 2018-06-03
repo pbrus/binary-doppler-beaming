@@ -3,7 +3,7 @@ class UnitsConverter:
     from and to International System of Units (SI).
     """
 
-    # All constant in SI units.
+    # All constants in SI units.
     G = 6.67408e-11
     SUN_MASS = 1.9884e30
     DAY = 86400
