@@ -129,3 +129,37 @@ def plot_radial_velocities(time, velocity1, velocity2,
         fig.savefig(filename, format="eps", bbox_inches=None)
     else:
         plt.show()
+
+
+def plot_light_curve(time, magnitude, xunit="s", filename=None):
+    """
+    Plot light curve caused by the doppler beaming in a binary system.
+
+    Parameters
+    ----------
+    time : 1D numpy.array(dtype=float)
+        Array represents time.
+    magnitude : 1D numpy.array(dtype=float)
+        Array represents magnitude of the binary system.
+    xunit : str
+        String which is x's label on the image.
+        Default set in seconds.
+    filename : str
+        The name of a file where the image will be saved to.
+        It should have the .eps extenstion. If None the image
+        will be only displayed on a screen.
+    """
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.grid(color='gray', linestyle='--', linewidth=0.2)
+    plt.xlabel('Time (' + xunit + ')')
+    plt.ylabel('Brightness (mag)')
+    plt.title('Light curve')
+    plt.gca().invert_yaxis()
+    plt.plot(time, magnitude, 'g-', linewidth=0.5)
+    plt.tight_layout()
+
+    if filename:
+        fig.savefig(filename, format="eps", bbox_inches=None)
+    else:
+        plt.show()
