@@ -5,9 +5,14 @@ class UnitsConverter:
 
     # All constants in SI units.
     G = 6.67408e-11
+    LIGHT_SPEED = 2.99792458e8
+    PLANCK_CONSTANT = 6.62606979e-34
+    BOLTZMANN_CONSTANT = 1.38064852e-23
     SUN_MASS = 1.9884e30
-    DAY = 86400
+    SUN_RADIUS = 6.957e8
     AU = 1.49597e11
+    PARSEC = 3.086e16
+    DAY = 86400
     MINUTE = 60
 
     def convert_sun_mass_to_kg(self, mass):
@@ -45,3 +50,15 @@ class UnitsConverter:
 
     def convert_mps_to_kmps(self, speed):
         return speed/1000.0
+
+    def convert_m_to_sun_radius(self, meters):
+        return meters/self.SUN_RADIUS
+
+    def convert_sun_radius_to_m(self, radii):
+        return self.SUN_RADIUS*radii
+
+    def convert_m_to_parsec(self, meters):
+        return meters/self.PARSEC
+
+    def convert_parsec_to_m(self, parsecs):
+        return parsecs*self.PARSEC
