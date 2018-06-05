@@ -26,9 +26,9 @@ def plot_projected_orbits(orbit1, orbit2, xunit="m", yunit="m", filename=None):
     plt.xlabel('x (' + xunit + ')')
     plt.ylabel('y (' + yunit + ')')
     plt.title('Binary system')
-    orbit = choose_greater_orbit(orbit1, orbit2)
-    arrow_length = calculate_arrow_length(orbit)
-    xran, yran = choose_xy_ranges(orbit, arrow_length)
+    init_xran, init_yran = choose_orbits_ranges(orbit1, orbit2)
+    arrow_length = calculate_arrow_length(init_xran, init_yran)
+    xran, yran = choose_xy_ranges(init_xran, init_yran, arrow_length)
     plt.arrow(0, 0, arrow_length, 0, head_width=0.05*arrow_length,
         head_length=0.1*arrow_length, fc='black', width=0.001*arrow_length)
     plt.arrow(0, 0, 0, arrow_length, head_width=0.05*arrow_length,
@@ -46,34 +46,31 @@ def plot_projected_orbits(orbit1, orbit2, xunit="m", yunit="m", filename=None):
     else:
         plt.show()
 
-def choose_greater_orbit(orbit1, orbit2):
-    x1_min = orbit1[:,0].min()
-    x1_max = orbit1[:,0].max()
-    x2_min = orbit2[:,0].min()
-    x2_max = orbit2[:,0].max()
+def choose_orbits_ranges(orbit1, orbit2):
+    x_min = min(orbit1[:,0].min(), orbit2[:,0].min())
+    x_max = max(orbit1[:,0].max(), orbit2[:,0].max())
+    y_min = min(orbit1[:,1].min(), orbit2[:,1].min())
+    y_max = max(orbit1[:,1].max(), orbit2[:,1].max())
 
-    if (x1_max - x1_min) > (x2_max - x2_min):
-        return orbit1
-    else:
-        return orbit2
+    return (x_min, x_max), (y_min, y_max)
 
-def calculate_arrow_length(orbit):
+def calculate_arrow_length(xran, yran):
     arrow_length_scale = 0.2
-    x_min = orbit[:,0].min()
-    x_max = orbit[:,0].max()
-    y_min = orbit[:,1].min()
-    y_max = orbit[:,1].max()
+    x_min = xran[0]
+    x_max = xran[1]
+    y_min = yran[0]
+    y_max = yran[1]
 
     minimum, maximum = choose_greater_range(x_min, x_max, y_min, y_max)
     arrow_length = arrow_length_scale*(maximum - minimum)
 
     return arrow_length
 
-def choose_xy_ranges(orbit, arrow_length):
-    x_min = orbit[:,0].min()
-    x_max = orbit[:,0].max()
-    y_min = orbit[:,1].min()
-    y_max = orbit[:,1].max()
+def choose_xy_ranges(xran, yran, arrow_length):
+    x_min = xran[0]
+    x_max = xran[1]
+    y_min = yran[0]
+    y_max = yran[1]
 
     minimum, maximum = choose_greater_range(x_min, x_max, y_min, y_max)
     margin = 0.1*(maximum - minimum)
