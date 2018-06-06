@@ -1,13 +1,8 @@
 from math import pow, log10, e
+from bidobe.astunit import *
 
 
-# Physical constants in SI units.
-
-LIGHT_SPEED = 2.99792458e8
-PLANCK_CONSTANT = 6.62606979e-34
-BOLTZMANN_CONSTANT = 1.38064852e-23
-
-def convert_passbands_to_frequency(passband):
+def convert_passband_to_frequency(passband):
     passbands_dict = {
         "U" : 3.6e-7,
         "B" : 4.4e-7,
@@ -15,26 +10,49 @@ def convert_passbands_to_frequency(passband):
         "I" : 9.0e-7
     }
 
-    return LIGHT_SPEED/passbands_dict[passband]
+    return UnitsConverter.LIGHT_SPEED/passbands_dict[passband]
 
-def alpha_parameter(temperature, frequency):
-    x = PLANCK_CONSTANT*frequency/(BOLTZMANN_CONSTANT*temperature)
-    exp_x = pow(e,x)
-    alpha = 3 - x*exp_x/(exp_x - 1)
 
-    return alpha
+class OrbitingObject(UnitsConverter):
 
-def flux(radial_velocity, alpha):
-    flux = 1 + (3 - alpha)*radial_velocity/LIGHT_SPEED
+    def __init__(self, distance, radius, temperature, passband):
+        self.distance = self.convert_parsec_to_m(distance)
+        self.radius = self.convert_sun_radius_to_m(radius)
+        self.temperature = temperature
+        self.frequency = convert_passband_to_frequency(passband)
+        self.calculate_stationary_flux()
+        self.calculate_alpha_parameter()
 
-    return flux
+    def calculate_stationary_flux(self):
+        # For smaller temperatures than 5000K there is no sense
+        # to calculate the alpha parameter and doppler beaming.
+        if self.temperature > 5000:
+            self.flux = pow(self.radius/self.distance,2)*pow(self.temperature,4)
+            self.flux *= self.STEFAN_BOLTZMANN_CONSTANT
+        else:
+            self.flux = 0
 
-def delta_magnitude(velocities, temperatures, passband, brightness=16.0):
-    frequency = convert_passbands_to_frequency(passband)
-    alpha1 = alpha_parameter(temperatures[0], frequency)
-    alpha2 = alpha_parameter(temperatures[1], frequency)
-    flux1 = flux(velocities[0], alpha1)
-    flux2 = flux(velocities[1], alpha2)
-    delta_magnitude = -2.5*log10(flux1 + flux2) + brightness
+        return self.flux
 
-    return delta_magnitude
+    def calculate_alpha_parameter(self):
+        x = (self.PLANCK_CONSTANT*self.frequency
+            /(self.BOLTZMANN_CONSTANT*self.temperature))
+        exp_x = pow(e,x)
+        self.alpha = 3 - x*exp_x/(exp_x - 1)
+
+        return self.alpha
+
+    def calculate_doppler_coefficient(self, radial_velocity):
+        self.doppler_coefficient = 1.0 + ((3.0 - self.alpha)
+                                   *radial_velocity/self.LIGHT_SPEED)
+
+        return self.doppler_coefficient
+
+
+def binary_brightness(object1, object2, zero_level=16.0):
+    doppler_flux = (object1.doppler_coefficient*object1.flux
+                    + object2.doppler_coefficient*object2.flux)
+
+    dmag = 2.5*log10(abs(doppler_flux)/(object1.flux + object2.flux))
+
+    return zero_level + dmag
