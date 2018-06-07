@@ -13,9 +13,9 @@ class Orbit2DParameters:
         Parameters
         ----------
         first_mass, second_mass : float
-            Star masses of binary system. Expressed in Sun mass unit.
+            Star masses of a binary system in Sun mass unit.
         sum_semi_major_axes : float
-            Sum of semi-major axes expressed in meters.
+            Sum of semi-major axes in meters.
         eccentricity : float
             A value of orbit's eccentricity between 0 and 1.
         periastron_passage : float
@@ -31,7 +31,8 @@ class Orbit2DParameters:
 class Orbit2D(UnitsConverter):
     """Orbit2D represents the position and velocity vectors of any object
     in binary system. For any given time t: x(t), y(t), v_x(t), v_y(t)
-    are computed."""
+    are computed.
+    """
 
     def __init__(self, orbit2d):
         self.first_mass = orbit2d.first_mass
@@ -138,7 +139,7 @@ class Orbit2D(UnitsConverter):
         return velocity_angle
 
     def update(self, time):
-        """Update x, y, v_x, v_y for particular time"""
+        """Update x, y, v_x, v_y for particular time."""
         self.calculate_mean_anomaly(time)
         self.calculate_eccentric_anomaly()
         self.calculate_true_anomaly()
@@ -156,14 +157,14 @@ class Orbit2DOrientation:
         Parameters
         ----------
         longitude_node : float
-            The position angle of the ascending node. Expressed in degrees.
+            The position angle of the ascending node in degrees.
         inclination : float
             The orbital inclination between 0 and 180. For inclination < 90
             an object moves in direction of increasing position angle. For
             inclination > 90 the direction is opposite. Expressed in degrees.
         periastron_argument : float
            The angle between the node and the periastron, measured in the
-           direction of the motion of the object. Expressed in degrees.
+           direction of the motion of the object in degrees.
         """
         self.longitude_node = radians(longitude_node + 90.0) # XY to WN => +90
         self.inclination = radians(inclination)
@@ -180,7 +181,8 @@ class Orbit2DOrientation:
 class Orbit3D(Orbit2D):
     """Orbit3D represents the projected position on the sky and a value of
     the radial velocity of any object in binary system. For any given time t:
-    x(t), y(t), v_rad(t) are computed."""
+    x(t), y(t), v_rad(t) are computed.
+    """
 
     def __init__(self, orbit2d, orientation):
         Orbit2D.__init__(self, orbit2d)
@@ -216,9 +218,7 @@ class Orbit3D(Orbit2D):
         return self.radial_velocity
 
     def update(self, time):
-        """Update x, y projected on the sky and radial velocity
-        for particular time.
-        """
+        """Update x, y projected on the sky and radial velocity."""
         Orbit2D.update(self, time)
         self.calculate_projected_position()
         self.calculate_radial_velocity()
