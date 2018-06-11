@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 
 def plot_projected_orbits(orbit1, orbit2, xunit="m", yunit="m", filename=None):
@@ -19,8 +20,30 @@ def plot_projected_orbits(orbit1, orbit2, xunit="m", yunit="m", filename=None):
         It should have the .eps extenstion. If None the image
         will be only displayed on a screen.
     """
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    figure = projected_orbits(orbit1, orbit2, xunit, yunit)
+    display_or_save_figure(figure, filename)
+
+def animate_projected_orbits(orbit1, orbit2, xunit="m", yunit="m"):
+    """
+    Animate orbiting objects of a binary system projected on the sky.
+    Position expressed in XY coordinate system.
+
+    Parameters
+    ----------
+    orbit1, orbit2 : numpy.array(shape=(*,2), dtype=float)
+        Array represents x, y position of an object
+        in the binary system.
+    xunit, yunit : str
+        String which is x/y's label on an image.
+        Default set in meters.
+    """
+    figure = projected_orbits(orbit1, orbit2, xunit, yunit)
+    animation = anim_projected_orbits(figure, orbit1, orbit2)
+    display_or_save_figure(figure, None)
+
+def projected_orbits(orbit1, orbit2, xunit, yunit):
+    figure = plt.figure()
+    ax = figure.add_subplot(111)
     ax.set_aspect('equal')
     ax.grid(color='gray', linestyle='--', linewidth=0.2)
     plt.xlabel('x (' + xunit + ')')
@@ -41,10 +64,24 @@ def plot_projected_orbits(orbit1, orbit2, xunit="m", yunit="m", filename=None):
     plt.plot(orbit2[:,0], orbit2[:,1], 'b-', linewidth=0.5)
     plt.tight_layout()
 
-    if filename:
-        fig.savefig(filename, format="eps", bbox_inches=None)
-    else:
-        plt.show()
+    return figure
+
+def anim_projected_orbits(fig, orbit1, orbit2):
+    line, = plt.plot(orbit1[:,0], orbit1[:,1], 'ko', animated=True)
+
+    def update_positions(i):
+        x1 = orbit1[:,0][i]
+        y1 = orbit1[:,1][i]
+        x2 = orbit2[:,0][i]
+        y2 = orbit2[:,1][i]
+        line.set_data((x1,x2),(y1,y2))
+
+        return line,
+
+    animation = FuncAnimation(fig, update_positions, frames=range(len(orbit1)),
+                         interval=1, blit=True)
+
+    return animation
 
 def choose_orbits_ranges(orbit1, orbit2):
     x_min = min(orbit1[:,0].min(), orbit2[:,0].min())
@@ -89,6 +126,11 @@ def choose_greater_range(first_min, first_max, second_min, second_max):
     else:
         return second_min, second_max
 
+def display_or_save_figure(figure, filename=None):
+    if filename:
+        figure.savefig(filename, format="eps", bbox_inches=None)
+    else:
+        plt.show()
 
 def plot_radial_velocities(time, velocity1, velocity2,
                            xunit="s", yunit="m/s", filename=None):
