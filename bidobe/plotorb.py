@@ -66,7 +66,7 @@ def projected_orbits(orbit1, orbit2, xunit, yunit):
 
     return figure
 
-def anim_projected_orbits(fig, orbit1, orbit2):
+def anim_projected_orbits(figure, orbit1, orbit2):
     line, = plt.plot(orbit1[:,0], orbit1[:,1], 'ko', animated=True)
 
     def update_positions(i):
@@ -78,8 +78,8 @@ def anim_projected_orbits(fig, orbit1, orbit2):
 
         return line,
 
-    animation = FuncAnimation(fig, update_positions, frames=range(len(orbit1)),
-                         interval=1, blit=True)
+    animation = FuncAnimation(figure, update_positions,
+                              frames=range(len(orbit1)), interval=1, blit=True)
 
     return animation
 
@@ -132,6 +132,7 @@ def display_or_save_figure(figure, filename=None):
     else:
         plt.show()
 
+
 def plot_radial_velocities(time, velocity1, velocity2,
                            xunit="s", yunit="m/s", filename=None):
     """
@@ -154,8 +155,34 @@ def plot_radial_velocities(time, velocity1, velocity2,
         It should have the .eps extenstion. If None the image
         will be only displayed on a screen.
     """
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    figure = radial_velocities(time, velocity1, velocity2, xunit, yunit)
+    display_or_save_figure(figure, filename)
+
+def animate_radial_velocities(time, velocity1, velocity2,
+                              xunit="s", yunit="m/s"):
+    """
+    Animate radial velocities of a binary system.
+
+    Parameters
+    ----------
+    time : 1D numpy.array(dtype=float)
+        Array represents time.
+    velocity1, velocity2 : 1D numpy.array(dtype=float)
+        Array represents radial velocity of each object.
+    xunit : str
+        String which is x's label on the image.
+        Default set in seconds.
+    yunit : str
+        String which is y's label on the image.
+        Default set in meters per second.
+    """
+    figure = radial_velocities(time, velocity1, velocity2, xunit, yunit)
+    animation = anim_radial_velocities(figure, time, velocity1, velocity2)
+    display_or_save_figure(figure, None)
+
+def radial_velocities(time, velocity1, velocity2, xunit="s", yunit="m/s"):
+    figure = plt.figure()
+    ax = figure.add_subplot(111)
     ax.grid(color='gray', linestyle='--', linewidth=0.2)
     plt.xlabel('Time (' + xunit + ')')
     plt.ylabel(r'$V_{rad}$' + ' (' + yunit + ')')
@@ -164,10 +191,23 @@ def plot_radial_velocities(time, velocity1, velocity2,
     plt.plot(time, velocity2, 'b-', linewidth=0.5)
     plt.tight_layout()
 
-    if filename:
-        fig.savefig(filename, format="eps", bbox_inches=None)
-    else:
-        plt.show()
+    return figure
+
+def anim_radial_velocities(figure, time, velocity1, velocity2):
+    line, = plt.plot(time, velocity1, 'ko', animated=True)
+
+    def current_velocities(i):
+        t = time[i]
+        v1 = velocity1[i]
+        v2 = velocity2[i]
+        line.set_data((t,t),(v1,v2))
+
+        return line,
+
+    animation = FuncAnimation(figure, current_velocities,
+                    frames=range(len(time)), interval=1, blit=True)
+
+    return animation
 
 
 def plot_light_curve(time, magnitude, xunit="s", filename=None):
@@ -188,8 +228,30 @@ def plot_light_curve(time, magnitude, xunit="s", filename=None):
         It should have the .eps extenstion. If None the image
         will be only displayed on a screen.
     """
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
+    figure = light_curve(time, magnitude, xunit)
+    display_or_save_figure(figure, filename)
+
+def animate_light_curve(time, magnitude, xunit="s"):
+    """
+    Animate light curve caused by the doppler beaming in a binary system.
+
+    Parameters
+    ----------
+    time : 1D numpy.array(dtype=float)
+        Array represents time.
+    magnitude : 1D numpy.array(dtype=float)
+        Array represents magnitude of the binary system.
+    xunit : str
+        String which is x's label on the image.
+        Default set in seconds.
+    """
+    figure = light_curve(time, magnitude, xunit)
+    animation = anim_light_curve(figure, time, magnitude)
+    display_or_save_figure(figure, None)
+
+def light_curve(time, magnitude, xunit):
+    figure = plt.figure()
+    ax = figure.add_subplot(111)
     ax.grid(color='gray', linestyle='--', linewidth=0.2)
     plt.xlabel('Time (' + xunit + ')')
     plt.ylabel('Brightness (mag)')
@@ -198,7 +260,19 @@ def plot_light_curve(time, magnitude, xunit="s", filename=None):
     plt.plot(time, magnitude, 'g-', linewidth=0.5)
     plt.tight_layout()
 
-    if filename:
-        fig.savefig(filename, format="eps", bbox_inches=None)
-    else:
-        plt.show()
+    return figure
+
+def anim_light_curve(figure, time, magnitude):
+    line, = plt.plot(time, magnitude, 'ko', animated=True)
+
+    def current_velocities(i):
+        t = time[i]
+        mag = magnitude[i]
+        line.set_data(t, mag)
+
+        return line,
+
+    animation = FuncAnimation(figure, current_velocities,
+                    frames=range(len(time)), interval=1, blit=True)
+
+    return animation
