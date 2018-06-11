@@ -35,14 +35,14 @@ class OrbitingObject(UnitsConverter):
         Change the name of a passband to the central frequency.
         Available: U, B, V, I.
         """
-        passbands_dict = {
+        passbands_central_wavelength = {
             "U" : 3.6e-7,
             "B" : 4.4e-7,
             "V" : 5.5e-7,
             "I" : 9.0e-7
         }
 
-        return self.LIGHT_SPEED/passbands_dict[passband]
+        return self.LIGHT_SPEED/passbands_central_wavelength[passband]
 
     def calculate_stationary_flux(self):
         # For smaller temperatures than 5000K there is no sense
