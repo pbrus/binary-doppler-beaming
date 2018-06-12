@@ -265,14 +265,14 @@ def light_curve(time, magnitude, xunit):
 def anim_light_curve(figure, time, magnitude):
     line, = plt.plot(time, magnitude, 'ko', animated=True)
 
-    def current_velocities(i):
+    def current_magnitude(i):
         t = time[i]
         mag = magnitude[i]
         line.set_data(t, mag)
 
         return line,
 
-    animation = FuncAnimation(figure, current_velocities,
+    animation = FuncAnimation(figure, current_magnitude,
                     frames=range(len(time)), interval=1, blit=True)
 
     return animation
