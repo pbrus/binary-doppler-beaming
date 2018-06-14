@@ -23,7 +23,7 @@ Additionally the software uses the following modules:
  * *scipy*
  * *matplotlib*
 
-They can be easily install too. Please run:
+They can be easily installed too. Please run:
 ```bash
 $ sudo pip3 install -r requirements.txt
 ```
