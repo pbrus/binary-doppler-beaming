@@ -7,7 +7,7 @@ This software generates a light curve of a binary system which is caused by the 
 
 ## Installation
 
-The software was written in *Python 3.4*. To install it please type from the command line:
+The software was written in *Python 3.4*. To install it, please type from the command line:
 ```bash
 $ sudo pip3 install git+https://github.com/pbrus/binary-doppler-beaming
 ```
@@ -53,17 +53,17 @@ Now you can run the `doppler_beaming.py`:
 ```bash
 $ ./doppler_beaming.py
 ```
-The main module *bidobe* (**bi**nary **do**ppler **be**aming) provides the interface to display, save to files and animate orbits, radial velocities and light curves. Moreover it allows to convert [SI](https://en.wikipedia.org/wiki/International_System_of_Units) units from and to astronomical units. For example:
+The main module *bidobe* (**bi**nary **do**ppler **be**aming) provides the interface to display, save to files and animate orbits, radial velocities and light curves. Moreover, it allows to convert [SI](https://en.wikipedia.org/wiki/International_System_of_Units) units from and to astronomical units. For example:
 ```python
 orbit1_position = orbit1.convert_m_to_au(orbit1_position)
 ```
-converts position in meter to position in [AU](https://en.wikipedia.org/wiki/Astronomical_unit). The following commands:
+converts position in meters to position in [AU](https://en.wikipedia.org/wiki/Astronomical_unit)s. The following commands:
 ```python
 plot_projected_orbits(orbit1_position, orbit2_position, "AU", "AU")
 plot_projected_orbits(orbit1_position, orbit2_position, "AU", "AU", "orbits.eps")
 animate_projected_orbits(orbit1_position, orbit2_position, "AU", "AU")
 ```
-display orbits projected on the sky, save them to file *orbits.eps* and animate them on the screen, respectively.
+can be used to display orbits projected on the sky, save them to *orbits.eps* file and animate them on the screen, respectively.
 
 I encourage to visit my website to see more detailed description of this project. The current link can be found on my [GitHub profile](https://github.com/pbrus).
 
