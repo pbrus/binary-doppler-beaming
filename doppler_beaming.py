@@ -12,7 +12,7 @@ config = cfg.ConfigParser()
 
 if config.read(configure_file) == []:
     print("There is no {0} file".format(configure_file))
-    exit()
+    exit(1)
 else:
     mass1 = float(config["OBJECTS"]["mass1"])
     mass2 = float(config["OBJECTS"]["mass2"])
