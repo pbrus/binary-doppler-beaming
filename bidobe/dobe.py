@@ -1,5 +1,5 @@
 from math import pow, log10, e
-from bidobe.astunit import *
+from bidobe.astunit import UnitsConverter
 
 
 class OrbitingObject(UnitsConverter):

@@ -1,6 +1,6 @@
 from math import sqrt, pi, pow, radians, sin, cos, atan2, asin
 from scipy.optimize import fsolve
-from bidobe.astunit import *
+from bidobe.astunit import UnitsConverter
 
 
 class Orbit2DParameters:
