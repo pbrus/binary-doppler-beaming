@@ -1,3 +1,13 @@
+"""
+Solve the two body problem and determine a position of an orbiting body
+on the sky. Additionally determine its radial velocity.
+
+Two main classes are available: Oribt2D and Orbit3D. For given parameters
+and particular time t an Orbit2D object calculates position and velocity
+vectors. An Orbit3D object inherits from the Orbit2D object. For given
+angles it projects position on the sky and calculates a radial velocity.
+
+"""
 from math import sqrt, pi, pow, radians, sin, cos, atan2, asin
 from scipy.optimize import fsolve
 from bidobe.astunit import UnitsConverter

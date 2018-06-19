@@ -1,3 +1,10 @@
+"""
+Save to file, plot or animate on the screen:
+  1. orbits of a binary system projected on the sky
+  2. radial velocities of each component of the binary system
+  3. a light curve caused by the doppler beaming
+"""
+
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 

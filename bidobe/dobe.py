@@ -1,3 +1,8 @@
+"""
+Calculate the doppler beaming caused by the mutual motions of stars
+in a binary system. Plot a light curve caused by the doppler beaming.
+
+"""
 from math import pow, log10, e
 from bidobe.astunit import UnitsConverter
 
@@ -76,7 +81,7 @@ class OrbitingObject(UnitsConverter):
 
 def binary_brightness(object1, object2, zero_level=16.0):
     """
-    Calculate brightness of a binary system taking into account a doppler
+    Calculate brightness of a binary system taking into account the doppler
     beaming.
 
     Parameters
