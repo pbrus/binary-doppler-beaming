@@ -16,3 +16,4 @@ from . import orbit
 from . import plotorb
 
 __all__ = ["orbit", "astunit", "plotorb", "dobe"]
+__version__ = '0.1.0'
