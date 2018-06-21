@@ -9,9 +9,9 @@ This software generates a light curve of a binary system which is caused by the 
 
 The software was written in *Python 3.4*. To install it, please type from the command line:
 ```bash
-$ sudo pip3 install git+https://github.com/pbrus/binary-doppler-beaming
+$ sudo pip3 install bidobe
 ```
-or:
+or alternatively:
 ```bash
 $ git clone https://github.com/pbrus/binary-doppler-beaming
 $ cd binary-doppler-beaming
@@ -51,7 +51,7 @@ periastron_argument = 110.0
 ```
 Now you can run the `doppler_beaming.py`:
 ```bash
-$ ./doppler_beaming.py
+$ python3 doppler_beaming.py
 ```
 The main module *bidobe* (**bi**nary **do**ppler **be**aming) provides the interface to display, save to files and animate orbits, radial velocities and light curves. Moreover, it allows to convert [SI](https://en.wikipedia.org/wiki/International_System_of_Units) units from and to astronomical units. For example:
 ```python
