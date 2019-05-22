@@ -13,9 +13,9 @@ setuptools.setup(
     url='https://github.com/pbrus/binary-doppler-beaming',
     packages=setuptools.find_packages(exclude=['tests']),
     install_requires=[
-        'numpy==1.14.5',
-        'scipy==1.1.0',
-        'matplotlib==2.2.2'
+        'numpy',
+        'scipy',
+        'matplotlib'
     ],
     tests_require=['pytest'],
     keywords=['binary', 'doppler', 'beaming'],
