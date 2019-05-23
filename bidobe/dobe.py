@@ -8,13 +8,15 @@ from bidobe.astunit import UnitsConverter
 
 
 class OrbitingObject(UnitsConverter):
-    """OrbitingObject represents a single object in binary system and its basic
+    """
+    OrbitingObject represents a single object in binary system and its basic
     astrophysical parameters. Due to orbital motion an object's flux (doppler
     beaming) varies with time.
     """
 
     def __init__(self, distance, radius, temperature, passband):
-        """Set basic parameters of an object in a binary system.
+        """
+        Set basic parameters of an object in a binary system.
 
         Parameters
         ----------
@@ -45,10 +47,10 @@ class OrbitingObject(UnitsConverter):
             Available: U, B, V, I.
         """
         passbands_central_wavelength = {
-            "U" : 3.6e-7,
-            "B" : 4.4e-7,
-            "V" : 5.5e-7,
-            "I" : 9.0e-7
+            "U": 3.6e-7,
+            "B": 4.4e-7,
+            "V": 5.5e-7,
+            "I": 9.0e-7
         }
 
         return self.LIGHT_SPEED/passbands_central_wavelength[passband]
@@ -57,7 +59,8 @@ class OrbitingObject(UnitsConverter):
         # For smaller temperatures than 5000K there is no sense
         # to calculate the alpha parameter and doppler beaming.
         if self.temperature > 5000:
-            self.flux = pow(self.radius/self.distance,2)*pow(self.temperature,4)
+            self.flux = (pow(self.radius/self.distance, 2)
+                         * pow(self.temperature, 4))
             self.flux *= self.STEFAN_BOLTZMANN_CONSTANT
         else:
             self.flux = 0
@@ -66,15 +69,15 @@ class OrbitingObject(UnitsConverter):
 
     def calculate_alpha_parameter(self):
         x = (self.PLANCK_CONSTANT*self.frequency
-            /(self.BOLTZMANN_CONSTANT*self.temperature))
-        exp_x = pow(e,x)
+             / (self.BOLTZMANN_CONSTANT*self.temperature))
+        exp_x = pow(e, x)
         self.alpha = 3 - x*exp_x/(exp_x - 1)
 
         return self.alpha
 
     def calculate_doppler_coefficient(self, radial_velocity):
-        self.doppler_coefficient = 1.0 + ((3.0 - self.alpha)
-                                   *radial_velocity/self.LIGHT_SPEED)
+        self.doppler_coefficient = (1.0 + ((3.0 - self.alpha)
+                                    * radial_velocity/self.LIGHT_SPEED))
 
         return self.doppler_coefficient
 

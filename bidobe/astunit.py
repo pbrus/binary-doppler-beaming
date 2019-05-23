@@ -3,8 +3,11 @@ Store physical constants and calculate astronomical units
 from and to the International System of Units.
 
 """
+
+
 class UnitsConverter:
-    """UnitsConverter converts different astronomical units
+    """
+    UnitsConverter converts different astronomical units
     from and to the International System of Units (SI).
     """
 

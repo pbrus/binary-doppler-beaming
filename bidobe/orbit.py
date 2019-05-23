@@ -18,7 +18,8 @@ class Orbit2DParameters:
 
     def __init__(self, first_mass, second_mass,
                  sum_semi_major_axes, eccentricity, periastron_passage=0.0):
-        """Set basic parameters of binary system in 2D space.
+        """
+        Set basic parameters of binary system in 2D space.
 
         Parameters
         ----------
@@ -39,7 +40,8 @@ class Orbit2DParameters:
 
 
 class Orbit2D(UnitsConverter):
-    """Orbit2D represents the position and velocity vectors of any object
+    """
+    Orbit2D represents the position and velocity vectors of any object
     in binary system. For any given time t: x(t), y(t), v_x(t), v_y(t)
     are computed.
     """
@@ -57,16 +59,15 @@ class Orbit2D(UnitsConverter):
         """Calculate a semi major axis."""
         sum_mass = self.first_mass + self.second_mass
         self.semi_major_axis = (self.sum_semi_major_axes*self.second_mass
-            /sum_mass)
+                                / sum_mass)
 
         return self.semi_major_axis
 
     def calculate_period(self):
         """Calculate a period in seconds."""
         sum_mass = self.first_mass + self.second_mass
-        self.period = sqrt(
-            4*pow(pi,2)*pow(self.sum_semi_major_axes,3)
-            /(self.G*(self.convert_sun_mass_to_kg(sum_mass))))
+        self.period = (sqrt(4*pow(pi, 2)*pow(self.sum_semi_major_axes, 3)
+                       / (self.G*(self.convert_sun_mass_to_kg(sum_mass)))))
 
         return self.period
 
@@ -83,8 +84,8 @@ class Orbit2D(UnitsConverter):
         return self.eccentric_anomaly
 
     def solve_kepler_equation(self):
-        self.eccentric_anomaly = fsolve(lambda x:
-            self.mean_anomaly + self.eccentricity*sin(x) - x, 0.0)[0]
+        self.eccentric_anomaly = fsolve(lambda x: self.mean_anomaly
+                                        + self.eccentricity*sin(x) - x, 0.0)[0]
 
         return self.eccentric_anomaly
 
@@ -101,9 +102,9 @@ class Orbit2D(UnitsConverter):
 
     def calculate_distance(self):
         """Calculate distance in meters."""
-        semilatus_rectum = self.semi_major_axis*(1 - pow(self.eccentricity,2))
-        self.distance = semilatus_rectum/(1
-            + self.eccentricity*cos(self.true_anomaly))
+        semilatus_rectum = self.semi_major_axis*(1 - pow(self.eccentricity, 2))
+        self.distance = (semilatus_rectum
+                         / (1 + self.eccentricity*cos(self.true_anomaly)))
 
         return self.distance
 
@@ -131,8 +132,8 @@ class Orbit2D(UnitsConverter):
         return sqrt(speed_pow2)
 
     def calculate_velocity_angle(self):
-        sin_angle = (pow(self.semi_major_axis,2)
-                     - pow(self.eccentricity*self.semi_major_axis,2))
+        sin_angle = (pow(self.semi_major_axis, 2)
+                     - pow(self.eccentricity*self.semi_major_axis, 2))
         sin_angle /= (self.distance*(2*self.semi_major_axis - self.distance))
         sin_angle = sqrt(sin_angle)
 
@@ -162,7 +163,8 @@ class Orbit2DOrientation:
     """Orbit2DOrientation is a builder class for the Orbit3D objects."""
 
     def __init__(self, longitude_node, inclination, periastron_argument):
-        """Set orbit's orientation of binary system in 3D space.
+        """
+        Set orbit's orientation of binary system in 3D space.
 
         Parameters
         ----------
@@ -176,7 +178,7 @@ class Orbit2DOrientation:
            The angle between the node and the periastron, measured in the
            direction of the motion of the object in degrees.
         """
-        self.longitude_node = radians(longitude_node + 90.0) # XY to WN => +90
+        self.longitude_node = radians(longitude_node + 90.0)  # XY to WN => +90
         self.inclination = radians(inclination)
         self.periastron_argument = radians(periastron_argument)
 
@@ -189,7 +191,8 @@ class Orbit2DOrientation:
 
 
 class Orbit3D(Orbit2D):
-    """Orbit3D represents the projected position on the sky and a value of
+    """
+    Orbit3D represents the projected position on the sky and a value of
     the radial velocity of any object in binary system. For any given time t:
     x(t), y(t), v_rad(t) are computed.
     """
@@ -209,17 +212,18 @@ class Orbit3D(Orbit2D):
 
     def calculate_projected_position(self):
         x, y = self.position
-        x_rot, y_rot = self.rotate_coordinate_system(x, y,
-            self.periastron_argument)
-        self.projected_position = self.rotate_coordinate_system(x_rot,
-            y_rot*cos(self.inclination), self.longitude_node)
+        x_rot, y_rot = (
+            self.rotate_coordinate_system(x, y, self.periastron_argument))
+        self.projected_position = (
+            self.rotate_coordinate_system(
+                x_rot, y_rot*cos(self.inclination), self.longitude_node))
 
         return self.projected_position
 
     def calculate_radial_velocity(self):
         """Calculate radial velocity in meters per second."""
         K = 2*pi*self.semi_major_axis*sin(self.inclination)
-        K /= self.period*sqrt(1 - pow(self.eccentricity,2))
+        K /= self.period*sqrt(1 - pow(self.eccentricity, 2))
 
         self.radial_velocity = K*(
             cos(self.periastron_argument + self.true_anomaly)

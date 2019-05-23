@@ -15,7 +15,7 @@ class Orbit2DTest(unittest.TestCase):
     def test_semi_major_axis(self):
         self.orbit.calculate_semi_major_axis()
         self.assertAlmostEqual(self.orbit.semi_major_axis, 1489361702127.6594,
-            delta=0.01)
+                               delta=0.01)
 
     def test_period(self):
         period = self.orbit.convert_sec_to_days(self.orbit.period)
@@ -74,7 +74,3 @@ class Orbit3DTest(unittest.TestCase):
         self.builder3d = None
         self.orbit2d = None
         self.orbit3d = None
-
-
-if __name__ == "__main__":
-    unittest.main()

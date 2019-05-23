@@ -12,7 +12,7 @@ class OrbitingObjectTest(unittest.TestCase):
 
     def test_stationary_flux(self):
         self.assertAlmostEqual(self.orbiting_object.flux,
-            1.4785989393228895e-13, delta=1e-12)
+                               1.4785989393228895e-13, delta=1e-12)
 
     def test_alpha_parameter(self):
         self.assertAlmostEqual(self.orbiting_object.alpha, -1.8828083664327906)
@@ -33,9 +33,9 @@ class BinaryBrightnessTest(unittest.TestCase):
         self.passband = "V"
         self.velocity = 23500
         self.first_object = OrbitingObject(self.distance, 0.8, 5500,
-            self.passband)
+                                           self.passband)
         self.second_object = OrbitingObject(self.distance, 1.2, 6920,
-            self.passband)
+                                            self.passband)
         self.first_object.calculate_doppler_coefficient(self.velocity)
         self.second_object.calculate_doppler_coefficient(self.velocity)
 

@@ -30,6 +30,7 @@ def plot_projected_orbits(orbit1, orbit2, xunit="m", yunit="m", filename=None):
     figure = _projected_orbits(orbit1, orbit2, xunit, yunit)
     _display_or_save_figure(figure, filename)
 
+
 def animate_projected_orbits(orbit1, orbit2, xunit="m", yunit="m"):
     """
     Animate orbiting objects of a binary system projected on the sky.
@@ -48,6 +49,7 @@ def animate_projected_orbits(orbit1, orbit2, xunit="m", yunit="m"):
     animation = _anim_projected_orbits(figure, orbit1, orbit2)
     _display_or_save_figure(figure, None)
 
+
 def _projected_orbits(orbit1, orbit2, xunit, yunit):
     figure = plt.figure()
     ax = figure.add_subplot(111)
@@ -60,28 +62,31 @@ def _projected_orbits(orbit1, orbit2, xunit, yunit):
     arrow_length = _calculate_arrow_length(init_xran, init_yran)
     xran, yran = _choose_xy_ranges(init_xran, init_yran, arrow_length)
     plt.arrow(0, 0, arrow_length, 0, head_width=0.05*arrow_length,
-        head_length=0.1*arrow_length, fc='black', width=0.001*arrow_length)
+              head_length=0.1*arrow_length, fc='black',
+              width=0.001*arrow_length)
     plt.arrow(0, 0, 0, arrow_length, head_width=0.05*arrow_length,
-        head_length=0.1*arrow_length, fc='black', width=0.001*arrow_length)
+              head_length=0.1*arrow_length, fc='black',
+              width=0.001*arrow_length)
     ax.set_xlim(xran)
     ax.set_ylim(yran)
     ax.annotate("W", (arrow_length, 0.05*arrow_length))
     ax.annotate("N", (0.05*arrow_length, arrow_length))
-    plt.plot(orbit1[:,0], orbit1[:,1], 'r-', linewidth=0.5)
-    plt.plot(orbit2[:,0], orbit2[:,1], 'b-', linewidth=0.5)
+    plt.plot(orbit1[:, 0], orbit1[:, 1], 'r-', linewidth=0.5)
+    plt.plot(orbit2[:, 0], orbit2[:, 1], 'b-', linewidth=0.5)
     plt.tight_layout()
 
     return figure
 
+
 def _anim_projected_orbits(figure, orbit1, orbit2):
-    line, = plt.plot(orbit1[:,0], orbit1[:,1], 'ko', animated=True)
+    line, = plt.plot(orbit1[:, 0], orbit1[:, 1], 'ko', animated=True)
 
     def _update_positions(i):
-        x1 = orbit1[:,0][i]
-        y1 = orbit1[:,1][i]
-        x2 = orbit2[:,0][i]
-        y2 = orbit2[:,1][i]
-        line.set_data((x1,x2),(y1,y2))
+        x1 = orbit1[:, 0][i]
+        y1 = orbit1[:, 1][i]
+        x2 = orbit2[:, 0][i]
+        y2 = orbit2[:, 1][i]
+        line.set_data((x1, x2), (y1, y2))
 
         return line,
 
@@ -90,13 +95,15 @@ def _anim_projected_orbits(figure, orbit1, orbit2):
 
     return animation
 
+
 def _choose_orbits_ranges(orbit1, orbit2):
-    x_min = min(orbit1[:,0].min(), orbit2[:,0].min())
-    x_max = max(orbit1[:,0].max(), orbit2[:,0].max())
-    y_min = min(orbit1[:,1].min(), orbit2[:,1].min())
-    y_max = max(orbit1[:,1].max(), orbit2[:,1].max())
+    x_min = min(orbit1[:, 0].min(), orbit2[:, 0].min())
+    x_max = max(orbit1[:, 0].max(), orbit2[:, 0].max())
+    y_min = min(orbit1[:, 1].min(), orbit2[:, 1].min())
+    y_max = max(orbit1[:, 1].max(), orbit2[:, 1].max())
 
     return (x_min, x_max), (y_min, y_max)
+
 
 def _calculate_arrow_length(xran, yran):
     arrow_length_scale = 0.2
@@ -109,6 +116,7 @@ def _calculate_arrow_length(xran, yran):
     arrow_length = arrow_length_scale*(maximum - minimum)
 
     return arrow_length
+
 
 def _choose_xy_ranges(xran, yran, arrow_length):
     x_min = xran[0]
@@ -126,12 +134,14 @@ def _choose_xy_ranges(xran, yran, arrow_length):
 
     return (x_min - margin, x_max + margin), (y_min - margin, y_max + margin)
 
+
 def _choose_greater_range(first_min, first_max, second_min, second_max):
 
     if (first_max - first_min) > (second_max - second_min):
         return first_min, first_max
     else:
         return second_min, second_max
+
 
 def _display_or_save_figure(figure, filename=None):
     if filename:
@@ -165,6 +175,7 @@ def plot_radial_velocities(time, velocity1, velocity2,
     figure = _radial_velocities(time, velocity1, velocity2, xunit, yunit)
     _display_or_save_figure(figure, filename)
 
+
 def animate_radial_velocities(time, velocity1, velocity2,
                               xunit="s", yunit="m/s"):
     """
@@ -187,6 +198,7 @@ def animate_radial_velocities(time, velocity1, velocity2,
     animation = _anim_radial_velocities(figure, time, velocity1, velocity2)
     _display_or_save_figure(figure, None)
 
+
 def _radial_velocities(time, velocity1, velocity2, xunit="s", yunit="m/s"):
     figure = plt.figure()
     ax = figure.add_subplot(111)
@@ -200,6 +212,7 @@ def _radial_velocities(time, velocity1, velocity2, xunit="s", yunit="m/s"):
 
     return figure
 
+
 def _anim_radial_velocities(figure, time, velocity1, velocity2):
     line, = plt.plot(time, velocity1, 'ko', animated=True)
 
@@ -207,12 +220,12 @@ def _anim_radial_velocities(figure, time, velocity1, velocity2):
         t = time[i]
         v1 = velocity1[i]
         v2 = velocity2[i]
-        line.set_data((t,t),(v1,v2))
+        line.set_data((t, t), (v1, v2))
 
         return line,
 
     animation = FuncAnimation(figure, _current_velocities,
-                    frames=range(len(time)), interval=1, blit=True)
+                              frames=range(len(time)), interval=1, blit=True)
 
     return animation
 
@@ -238,6 +251,7 @@ def plot_light_curve(time, magnitude, xunit="s", filename=None):
     figure = _light_curve(time, magnitude, xunit)
     _display_or_save_figure(figure, filename)
 
+
 def animate_light_curve(time, magnitude, xunit="s"):
     """
     Animate light curve caused by the doppler beaming in a binary system.
@@ -256,6 +270,7 @@ def animate_light_curve(time, magnitude, xunit="s"):
     animation = _anim_light_curve(figure, time, magnitude)
     _display_or_save_figure(figure, None)
 
+
 def _light_curve(time, magnitude, xunit):
     figure = plt.figure()
     ax = figure.add_subplot(111)
@@ -269,6 +284,7 @@ def _light_curve(time, magnitude, xunit):
 
     return figure
 
+
 def _anim_light_curve(figure, time, magnitude):
     line, = plt.plot(time, magnitude, 'ko', animated=True)
 
@@ -280,6 +296,6 @@ def _anim_light_curve(figure, time, magnitude):
         return line,
 
     animation = FuncAnimation(figure, _current_magnitude,
-                    frames=range(len(time)), interval=1, blit=True)
+                              frames=range(len(time)), interval=1, blit=True)
 
     return animation
