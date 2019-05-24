@@ -12,7 +12,7 @@ This package provides tools to:
 """
 
 __all__ = ["orbit", "astunit", "plotorb", "dobe"]
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 from . import astunit
